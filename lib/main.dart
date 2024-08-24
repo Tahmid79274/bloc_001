@@ -10,18 +10,6 @@ void main() {
   runApp(const MyApp());
 }
 
-// const names = ['foo', 'bar', 'baz'];
-
-// extension RandomElement<T> on Iterable<T> {
-//   T getRandomElement() => elementAt(math.Random().nextInt(length));
-// }
-
-// class NamesCubit extends Cubit<String?> {
-//   NamesCubit() : super(null);
-
-//   void pickRandomName() => emit(names.getRandomElement());
-// }
-
 @immutable
 abstract class LoadAction {
   const LoadAction();
@@ -45,6 +33,38 @@ extension UrlString on PersonURL {
         return 'http://127.0.0.1:5500/api/person2.json';
     }
   }
+}
+
+@immutable
+class Person {
+  final String name;
+  final int age;
+  const Person({required this.name, required this.age});
+  Person.fromJson(Map<String, dynamic> json)
+      : name = json['name'] as String,
+        age = json['age'] as int;
+}
+
+Future<Iterable<Person>> getPersons(String url) => HttpClient()
+    .getUrl(Uri.parse(url))
+    .then((req) => req.close())
+    .then((resp) => resp.transform(utf8.decoder).join())
+    .then((str) => json.decode(str) as List<dynamic>)
+    .then((list) => list.map((e) => Person.fromJson(e)));
+
+@immutable
+class FetchResult {
+  final Iterable<Person> persons;
+  final bool isRetrievedFromCache;
+  FetchResult({required this.persons, required this.isRetrievedFromCache});
+
+  @override
+  String toString() =>
+      'FetchResult (isRetrievedFromCache = $isRetrievedFromCache), persons = $persons';
+}
+
+class PersonBloc extends Bloc<LoadAction, FetchResult?> {
+  PersonBloc() : super(null);
 }
 
 class MyApp extends StatelessWidget {
@@ -74,65 +94,3 @@ class MyHomePage extends StatelessWidget {
     return Container();
   }
 }
-
-// class MyHomePage extends StatefulWidget {
-//   const MyHomePage({super.key});
-
-//   @override
-//   State<MyHomePage> createState() => _MyHomePageState();
-// }
-
-// class _MyHomePageState extends State<MyHomePage> {
-//   late final NamesCubit namesCubit;
-
-//   @override
-//   void initState() {
-//     namesCubit = NamesCubit();
-//     super.initState();
-//   }
-
-//   @override
-//   void dispose() {
-//     namesCubit.close();
-//     super.dispose();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//         appBar: AppBar(
-//           title: const Text('Home Page'),
-//         ),
-//         body: StreamBuilder<String?>(
-//           stream: namesCubit.stream,
-//           builder: (context, snapshot) {
-//             final button = TextButton(
-//               child: Text('click on Random Button'),
-//               onPressed: () {
-//                 namesCubit.pickRandomName();
-//               },
-//             );
-//             switch (snapshot.connectionState) {
-//               case ConnectionState.none:
-//                 return Column(
-//                   children: [Text('none'), button],
-//                 );
-//               case ConnectionState.waiting:
-//                 return Column(
-//                   children: [Text('waiting'), button],
-//                 );
-//               case ConnectionState.active:
-//                 return Column(
-//                   children: [Text(snapshot.data ?? 'active'), button],
-//                 );
-//               case ConnectionState.done:
-//                 return Container(
-//                   color: Colors.red,
-//                   width: 100,
-//                   height: 100,
-//                 );
-//             }
-//           },
-//         ));
-//   }
-// }
