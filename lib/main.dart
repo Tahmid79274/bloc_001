@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:developer' as devtools show log;
 import 'package:flutter/material.dart';
@@ -55,12 +56,15 @@ class Person {
         age = json['age'] as int;
 }
 
-Future<Iterable<Person>> getPersons(String url) => HttpClient()
-    .getUrl(Uri.parse(url))
-    .then((req) => req.close())
-    .then((resp) => resp.transform(utf8.decoder).join())
-    .then((str) => json.decode(str) as List<dynamic>)
-    .then((list) => list.map((e) => Person.fromJson(e)));
+Future<Iterable<Person>> getPersons(String url) {
+  log("Selected URL is $url");
+  return HttpClient()
+      .getUrl(Uri.parse(url))
+      .then((req) => req.close())
+      .then((resp) => resp.transform(utf8.decoder).join())
+      .then((str) => json.decode(str) as List<dynamic>)
+      .then((list) => list.map((e) => Person.fromJson(e)));
+}
 
 @immutable
 class FetchResult {
