@@ -10,63 +10,6 @@ void main() {
   runApp(const MyApp());
 }
 
-@immutable
-abstract class LoadAction {
-  const LoadAction();
-}
-
-@immutable
-class LoadPersonAction implements LoadAction {
-  final PersonURL url;
-
-  LoadPersonAction({required this.url}) : super();
-}
-
-enum PersonURL { persons1, persons2 }
-
-extension UrlString on PersonURL {
-  String get urlString {
-    switch (this) {
-      case PersonURL.persons1:
-        return 'http://127.0.0.1:5500/api/person1.json';
-      case PersonURL.persons2:
-        return 'http://127.0.0.1:5500/api/person2.json';
-    }
-  }
-}
-
-@immutable
-class Person {
-  final String name;
-  final int age;
-  const Person({required this.name, required this.age});
-  Person.fromJson(Map<String, dynamic> json)
-      : name = json['name'] as String,
-        age = json['age'] as int;
-}
-
-Future<Iterable<Person>> getPersons(String url) => HttpClient()
-    .getUrl(Uri.parse(url))
-    .then((req) => req.close())
-    .then((resp) => resp.transform(utf8.decoder).join())
-    .then((str) => json.decode(str) as List<dynamic>)
-    .then((list) => list.map((e) => Person.fromJson(e)));
-
-@immutable
-class FetchResult {
-  final Iterable<Person> persons;
-  final bool isRetrievedFromCache;
-  FetchResult({required this.persons, required this.isRetrievedFromCache});
-
-  @override
-  String toString() =>
-      'FetchResult (isRetrievedFromCache = $isRetrievedFromCache), persons = $persons';
-}
-
-class PersonBloc extends Bloc<LoadAction, FetchResult?> {
-  PersonBloc() : super(null);
-}
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -79,9 +22,9 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: MyHomePage(
+        home: const MyHomePage(
             // title: 'Demo Bloc',
-            ));
+            ),);
   }
 }
 
@@ -90,7 +33,6 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    late final Bloc myBloc;
-    return Container();
+    return const Scaffold();
   }
 }
