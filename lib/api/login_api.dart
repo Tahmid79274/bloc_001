@@ -15,10 +15,11 @@ class LoginApi implements LoginApiProtocol {
   static const LoginApi _shared = LoginApi._sharedInstance();
 
   factory LoginApi() => _shared;
-  
+
   @override
-  Future<LoginHandle?> login({required String email, required String password}) {
-    // TODO: implement login
-    throw UnimplementedError();
-  }
+  Future<LoginHandle?> login(
+          {required String email, required String password}) =>
+      Future.delayed(Duration(seconds: 2),
+              () => email == 'foobar@gmail.com' && password == 'foobar')
+          .then((isLoggedIn) => isLoggedIn ? LoginHandle.foobar() : null);
 }
