@@ -8,17 +8,24 @@ class AppState {
   final LoginHandle? loginHandle;
   final Iterable<Note>? fetchedNotes;
 
-  const AppState(
-      {required this.isLoading,
-      required this.loginErrors,
-      required this.loginHandle,
-      required this.fetchedNotes});
+  const AppState.empty()
+      : isLoading = false,
+        loginErrors = null,
+        loginHandle = null,
+        fetchedNotes = null;
+
+  const AppState({
+    required this.isLoading,
+    required this.loginErrors,
+    required this.loginHandle,
+    required this.fetchedNotes,
+  });
 
   @override
   String toString() => {
         'isLoading': isLoading,
         'loginError': loginErrors,
         'loginHandle': loginHandle,
-        'fetchedNotes': fetchedNotes
+        'fetchedNotes': fetchedNotes,
       }.toString();
 }

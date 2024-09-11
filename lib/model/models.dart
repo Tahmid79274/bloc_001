@@ -14,7 +14,6 @@ class LoginHandle {
   }
 
   @override
-  // TODO: implement hashCode
   int get hashCode => token.hashCode;
 
   @override
