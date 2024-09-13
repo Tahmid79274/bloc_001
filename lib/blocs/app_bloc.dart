@@ -13,41 +13,60 @@ class AppBloc extends Bloc<AppAction, AppState> {
       : super(const AppState.empty()) {
     on<LoginAction>(
       (event, emit) async {
-        emit(const AppState(
+        emit(
+          const AppState(
             isLoading: true,
             loginErrors: null,
             loginHandle: null,
-            fetchedNotes: null));
+            fetchedNotes: null,
+          ),
+        );
 
         final loginHandle = await loginApiProtocol.login(
-            email: event.email, password: event.password);
+          email: event.email,
+          password: event.password,
+        );
 
-        emit(AppState(
+        emit(
+          AppState(
             isLoading: false,
             loginErrors: loginHandle == null ? LoginErrors.invalidHandle : null,
             loginHandle: loginHandle,
-            fetchedNotes: null));
+            fetchedNotes: null,
+          ),
+        );
       },
     );
     on<LoadNoteAction>(
-      (event, emit) {
-        emit(AppState(
+      (event, emit) async {
+        emit(
+          AppState(
             isLoading: true,
             loginErrors: null,
             loginHandle: state.loginHandle,
-            fetchedNotes: null));
+            fetchedNotes: null,
+          ),
+        );
+        final loginHandle = state.loginHandle;
+        if (loginHandle != const LoginHandle.foobar()) {
+          emit(
+            AppState(
+              isLoading: false,
+              loginErrors: LoginErrors.invalidHandle,
+              loginHandle: loginHandle,
+              fetchedNotes: null,
+            ),
+          );
+          return;
+        }
+        final notes =
+            await notesApiProtocol.getNotes(loginHandle: loginHandle!);
+        emit(AppState(
+            isLoading: false,
+            loginErrors: null,
+            loginHandle: loginHandle,
+            fetchedNotes: notes));
       },
     );
-
-    final loginHandle = state.loginHandle;
-    if (loginHandle != const LoginHandle.foobar()) {
-      emit(AppState(
-          isLoading: false,
-          loginErrors: LoginErrors.invalidHandle,
-          loginHandle: loginHandle,
-          fetchedNotes: null));
-      return;
-    }
-    final notes = await notesApiProtocol.getNotes(loginHandle: loginHandle!);
   }
 }
