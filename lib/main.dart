@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc101/api/login_api.dart';
 import 'package:bloc101/api/notes_api.dart';
 import 'package:bloc101/blocs/action.dart';
@@ -52,9 +54,11 @@ class MyHomePage extends StatelessWidget {
         body: BlocConsumer<AppBloc, AppState>(
           builder: (context, appState) {
             final notes = appState.fetchedNotes;
+            log('The notes are $notes');
             if (notes == null) {
               return LoginView(
                 onLoginTapped: (email, password) {
+                  log('Login button clicked');
                   LoginAction(email: email, password: password);
                 },
               );
@@ -64,14 +68,17 @@ class MyHomePage extends StatelessWidget {
           },
           listener: (context, appState) {
             if (appState.isLoading) {
+              log('The app state is loading.');
               LoadingScreen.instance().show(
                 context: context,
                 text: pleaseWait,
               );
             } else {
+              log('The app state is not loading.');
               LoadingScreen.instance().hide();
             }
             final loginErrors = appState.loginErrors;
+            log('Login Error has: $loginErrors');
             if (loginErrors != null) {
               showGenericDialog(
                 context: context,

@@ -20,23 +20,24 @@ class LoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-        onPressed: () {
-          final email = emailController.text;
-          final password = passwordController.text;
-          if (email.isEmpty || password.isEmpty) {
-            showGenericDialog<bool>(
-              context: context,
-              title: emailOrPasswordEmptyDialogTitle,
-              content: emailOrPasswordEmptyDescription,
-              optionsBuilder: () => {ok: true},
-            );
-          } else {
-            onLoginTapped(
-              email,
-              password,
-            );
-          }
-        },
-        child: const Text(login));
+      onPressed: () {
+        final email = emailController.text;
+        final password = passwordController.text;
+        if (email.isEmpty || password.isEmpty) {
+          showGenericDialog<bool>(
+            context: context,
+            title: emailOrPasswordEmptyDialogTitle,
+            content: emailOrPasswordEmptyDescription,
+            optionsBuilder: () => {ok: true},
+          );
+        } else {
+          onLoginTapped(
+            email,
+            password,
+          );
+        }
+      },
+      child: const Text(login),
+    );
   }
 }

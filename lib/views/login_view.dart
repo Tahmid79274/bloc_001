@@ -13,15 +13,16 @@ class LoginView extends HookWidget {
     final emailController = useTextEditingController();
     final passwordController = useTextEditingController();
     return Padding(
-      padding: EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
           EmailTextField(emailController: emailController),
           PasswordTextField(passwordController: passwordController),
           LoginButton(
-              emailController: emailController,
-              passwordController: passwordController,
-              onLoginTapped: onLoginTapped),
+            emailController: emailController,
+            passwordController: passwordController,
+            onLoginTapped: onLoginTapped,
+          ),
         ],
       ),
     );
