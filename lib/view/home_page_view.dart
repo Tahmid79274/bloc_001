@@ -13,28 +13,29 @@ class HomePageView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(
-          child: MultiBlocProvider(
-            providers: [
-              BlocProvider<TopBloc>(
-                  create: (_) => TopBloc(
-                        waitBeforeLoading: const Duration(seconds: 3),
-                        urls: images,
-                      )),
-              BlocProvider<BottomBloc>(
-                  create: (_) => BottomBloc(
-                        waitBeforeLoading: const Duration(seconds: 3),
-                        urls: images,
-                      )),
+        value: SystemUiOverlayStyle.dark,
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider<TopBloc>(
+                create: (_) => TopBloc(
+                      waitBeforeLoading: const Duration(seconds: 3),
+                      urls: images,
+                    )),
+            BlocProvider<BottomBloc>(
+                create: (_) => BottomBloc(
+                      waitBeforeLoading: const Duration(seconds: 3),
+                      urls: images,
+                    )),
+          ],
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              AppBlocView<TopBloc>(),
+              AppBlocView<BottomBloc>(),
             ],
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                AppBlocView<TopBloc>(),
-                AppBlocView<BottomBloc>(),
-              ],
-            ),
           ),
-          value: SystemUiOverlayStyle.dark),
+        ),
+      ),
     );
   }
 }

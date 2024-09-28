@@ -21,20 +21,22 @@ class AppBlocView<T extends AppBloc> extends StatelessWidget {
   Widget build(BuildContext context) {
     startUpdatingBloc(context);
     return Expanded(
-      child: BlocBuilder<T, AppState>(builder: (context, appState) {
-        if (appState.error != null) {
-          return const Text('An Error occured');
-        } else if (appState.data != null) {
-          return Image.memory(
-            appState.data!,
-            fit: BoxFit.fitHeight,
-          );
-        } else {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-      }),
+      child: BlocBuilder<T, AppState>(
+        builder: (context, appState) {
+          if (appState.error != null) {
+            return const Text('An Error occured');
+          } else if (appState.data != null) {
+            return Image.memory(
+              appState.data!,
+              fit: BoxFit.fitHeight,
+            );
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
+      ),
     );
   }
 }
