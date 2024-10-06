@@ -15,6 +15,49 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             isLoading: false,
           ),
         ) {
+    on<AppEventGoToRegistration>(
+      (event, emit) async {
+        emit(
+          const AppStateIsInRegistrationView(
+            isLoading: false,
+          ),
+        );
+      },
+    );
+    on<AppEventLogIn>(
+      (event, emit) async {
+        emit(
+          const AppStateLogout(
+            isLoading: true,
+          ),
+        );
+        try {
+          final email = event.email;
+          final password = event.password;
+          final userCredential =
+              await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: email,
+            password: password,
+          );
+          final user = userCredential.user!;
+          final images = await _getImages(user.uid);
+          emit(
+            AppStateLoggedIn(
+              isLoading: false,
+              user: user,
+              images: images,
+            ),
+          );
+        } on FirebaseAuthException catch (e) {
+          emit(
+            AppStateLogout(
+              isLoading: false,
+              authError: AuthError.from(e),
+            ),
+          );
+        }
+      },
+    );
     on<AppEventGoToLogin>(
       (event, emit) {
         emit(const AppStateLogout(isLoading: false));
@@ -36,7 +79,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             AppStateLoggedIn(
               isLoading: false,
               user: credential.user!,
-              images: [],
+              images: const [],
             ),
           );
         } on FirebaseAuthException catch (e) {
@@ -88,14 +131,6 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     on<AppEventDeleteAccount>(
       (event, emit) async {
         final user = FirebaseAuth.instance.currentUser!;
-        if (user == null) {
-          emit(
-            const AppStateLogout(
-              isLoading: false,
-            ),
-          );
-          return;
-        }
         emit(
           AppStateLoggedIn(
             isLoading: true,
